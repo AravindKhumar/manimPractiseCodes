@@ -2,6 +2,7 @@ from manimlib.imports import *
 import numpy as np
 
 class usingConfig(Scene):
+
 	CONFIG = {
 
 		"text1" : TexMobject("\\int_{a}^{b} f(x) = f(b) - f(a)"),
@@ -22,4 +23,17 @@ class usingConfig(Scene):
 
 		self.play(self.object1.shift, self.vector)
 
-		self.wait()
+		self.wait
+
+class reusingTheClassWithJustConfig(usingConfig):
+
+	CONFIG = {
+		"text1" : TexMobject("""\\begin{bmatrix}
+								1 & 2\\\\
+								3 & 4
+								\\end{bmatrix}
+							"""),
+		"object1" : Square().set_color(RED),
+		"scaleFactor" : 2,
+		"vector" : np.array([-1,-1,0])
+	}
