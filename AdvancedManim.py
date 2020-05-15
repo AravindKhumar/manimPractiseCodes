@@ -26,7 +26,6 @@ class usingConfig(Scene):
 		self.wait
 
 class reusingTheClassWithJustConfig(usingConfig):
-
 	CONFIG = {
 		"text1" : TexMobject("""\\begin{bmatrix}
 								1 & 2\\\\
@@ -37,3 +36,28 @@ class reusingTheClassWithJustConfig(usingConfig):
 		"scaleFactor" : 2,
 		"vector" : np.array([-1,-1,0])
 	}
+
+class changeBackgroundColor(Scene):
+	CONFIG = {
+		"camera_config":{"background_color":WHITE},
+		"text1" : TexMobject(r"\frac{dy}{dx} \Bigr|_{y=2}").scale(3).set_color(BLACK),	
+	}
+	def construct(self):
+		self.play(Write(self.text1))
+		self.wait(2)
+
+class arrangeAndGroupObjects(Scene):
+	def construct(self):
+
+		eq1 = TexMobject("2x + 3y = 6")
+		eq2 = TexMobject("1x + 6y = 3")
+
+		group = VGroup(eq1,eq2)
+
+		group.arrange(RIGHT, buff = 0.4)
+
+		self.add(group)	
+		self.wait(2)
+
+		self.play(group.arrange, DOWN, {"aligned_edge" : LEFT, "buff" : 0.5})
+		self.wait(1)
