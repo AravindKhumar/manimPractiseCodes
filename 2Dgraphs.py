@@ -156,3 +156,73 @@ class twoDgraphLabelFormatting(GraphScene):
 				Write(self.y_axis),
 				Write(self.xLabelNumbers),
 				)
+
+class graphingSineWave(GraphScene):
+	CONFIG = {
+		"x_max"				: 2*PI,
+		"x_min"				: -2*PI,
+		"y_max"				: 1,
+		"y_min"				: -1,
+		"x_tick_frequency"	: PI/2,
+		"y_tick_frequency"	: 1,
+		"axes_color"		: BLUE,
+		"graph_origin"		: ORIGIN,
+		"x_axis_label"		: None,
+		"y_axis_label"		: None,
+	}
+
+	def construct(self):
+		self.setup_axes()
+		self.wait(2)
+		graph = self.get_graph(lambda x: np.sin(x), color = GREEN, x_max = PI, x_min = -PI)
+
+		self.play(ShowCreation(graph), run_time = 2)
+		self.wait(2)
+
+	def setup_axes(self):
+		GraphScene.setup_axes(self)
+
+		yAxisLabel = TexMobject("\\sin\\theta")
+		xAxisLabel = TexMobject("\\theta")
+		xAxisLabel.next_to(self.x_axis, RIGHT)
+		yAxisLabel.next_to(self.y_axis, UP)
+
+		self.x_axis.set_color(YELLOW)
+		self.y_axis.set_color(RED)
+
+		self.y_axis.label_direction =  LEFT
+		self.y_axis.add_numbers(*[-1,1])
+
+		xValArray = np.arange(-2*PI, 5*PI/2, PI/2)
+		xTexArray = [
+					"{-2}\\pi",
+					"-\\frac{3\\pi}{2}",
+					"-\\pi",
+					"-\\frac{\\pi}{2}",
+					" ",
+					"\\frac{\\pi}{2}",
+					"\\pi",
+					"\\frac{3\\pi}{2}",
+					"{2}\\pi",
+					]
+		xTickLabels = zip(xValArray,xTexArray)
+		self.xLabelNumbers = VGroup()
+		for xVal, xTex in xTickLabels:
+			texObj = TexMobject(xTex).scale(0.7)
+			if(xVal == PI or xVal == -PI):
+				texObj.next_to(self.coords_to_point(xVal,0),DOWN*1.4)
+			else:
+				texObj.next_to(self.coords_to_point(xVal,0),DOWN*0.7)
+			self.xLabelNumbers.add(texObj)
+
+		self.play(
+				*[Write(obj) for obj in 
+					[
+					self.x_axis,
+					self.y_axis,
+					self.xLabelNumbers,
+					xAxisLabel,
+					yAxisLabel
+					]
+				]
+			)
