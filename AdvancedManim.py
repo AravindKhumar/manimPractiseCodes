@@ -61,3 +61,119 @@ class arrangeAndGroupObjects(Scene):
 
 		self.play(group.arrange, DOWN, {"aligned_edge" : LEFT, "buff" : 0.5})
 		self.wait(1)
+
+class zoomInCamera(MovingCameraScene):
+	def construct(self):
+
+		eq1 = TexMobject(r"\nabla\textbf{u}").scale(2)
+		sq = Square()
+
+		group = VGroup(eq1,sq)
+		group.arrange(RIGHT, buff = 5)
+
+		self.play(Write(group))
+		self.wait(2)
+
+		self.camera_frame.save_state()
+
+		self.play(
+
+				self.camera_frame.set_width, eq1.get_width()*3,
+				self.camera_frame.set_height, eq1.get_height()*2,
+				self.camera_frame.move_to, eq1
+				 )
+		self.wait(2)
+		self.play(Restore(self.camera_frame))
+		self.wait(1)
+		self.play(
+
+				self.camera_frame.set_width, sq.get_width()*3,
+				self.camera_frame.set_height, sq.get_height()*2,
+				self.camera_frame.move_to, sq
+				 )
+		
+		self.wait(2)
+
+class drawingGraph(GraphScene,MovingCameraScene):
+    CONFIG = {
+        "y_max" : 50,
+        "y_min" : 0,
+        "x_max" : 7,
+        "x_min" : 0,
+        "y_tick_frequency" : 5, 
+        "x_tick_frequency" : 0.5, 
+    }
+    # Setup the scenes
+    def setup(self):            
+        MovingCameraScene.setup(self)
+        GraphScene.setup(self)
+
+    def construct(self):
+        self.setup_axes(animate=True)
+
+        self.wait(1)
+
+        graph = self.get_graph(lambda x : x**2,  
+                                    color = GREEN,
+                                    x_min = 0, 
+                                    x_max = 7
+                                    )
+        dot_at_start_graph=Dot().move_to(graph.points[0])
+        dot_at_end_grap=Dot().move_to(graph.points[-1])
+
+        self.add(graph,dot_at_end_grap,dot_at_start_graph)
+
+        self.camera_frame.save_state()
+
+        self.play(
+            self.camera_frame.scale,.5,
+            self.camera_frame.move_to,dot_at_start_graph
+        )
+
+        self.play(
+            self.camera_frame.move_to,dot_at_end_grap
+        )
+
+        self.wait(2)
+
+        self.play(
+        	Restore(self.camera_frame)
+        )
+
+        self.wait(2)
+
+
+class LinearTransformation(LinearTransformationScene):
+	CONFIG = {
+		"include_background_plane" : True,
+		"include_foreground_plane" : True,
+		"foreground_plane_kwargs" : {
+			"x_radius" : FRAME_WIDTH,
+			"y_radius" : FRAME_HEIGHT,
+			"secondary_line_ratio" : 0,
+		},
+		"background_plane_kwargs" : {
+			"color" : WHITE,
+			"secondary_color" : RED,
+			"axes_color" : RED,
+			"stroke_width" : 7,
+		},
+
+		"show_coordinates" : False,
+		"show_basis_vectors" : True,
+		"basis_vector_stroke_width" : 6,
+		"i_hat_color" : X_COLOR,
+		"j_hat_color" : Y_COLOR,
+		"leave_ghost_vectors" : 0, 
+	}
+
+	def construct(self):
+		v1 = np.array([[1],[1]])
+		mob = Circle()
+
+		tfMatrix = np.array([[2,1],[-1,1]])
+		self.add_transformable_mobject(mob)
+		self.add_vector(v1)
+		self.apply_matrix(tfMatrix)
+
+		self.wait(2)
