@@ -177,3 +177,18 @@ class LinearTransformation(LinearTransformationScene):
 		self.apply_matrix(tfMatrix)
 
 		self.wait(2)
+
+class removeAllObjectsInScene(Scene):
+	def construct(self):
+
+		self.add(
+			VGroup(*[
+				VGroup(*[
+					Dot() for i in range(10)]
+					  ).arrange(RIGHT) for k in range(10)]
+				  ).arrange(DOWN)
+				)
+		self.play(*[FadeOut(mob) for mob in self.mobjects])
+	#All objects on the screen are saved in self.mobjects
+		self.wait(2)
+
